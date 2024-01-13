@@ -1,5 +1,5 @@
 
-
+import os
 import streamlit as st
 import base64
 from openai import OpenAI
@@ -12,10 +12,13 @@ def encode_image(image_file):
 st.set_page_config(page_title="Scientific Image Analyst", layout="centered", initial_sidebar_state="collapsed")
 # Streamlit page setup
 st.title("🧪 Scientific Image Analyst: `GPT-4 Turbo with Vision` 👀")
+ke = st.text_input('Ingresa tu Clave')
+#os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
+os.environ['OPENAI_API_KEY'] = ke
 
 
 # Retrieve the OpenAI API Key from secrets
-api_key = db.secrets.get(name="OPENAI_API_KEY")
+api_key = os.environ['OPENAI_API_KEY']
 
 # Initialize the OpenAI client with the API key
 client = OpenAI(api_key=api_key)
