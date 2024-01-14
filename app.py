@@ -10,7 +10,7 @@ def encode_image(image_file):
 
 st.set_page_config(page_title="Scientific Image Analyst", layout="centered", initial_sidebar_state="collapsed")
 # Streamlit page setup
-st.title("🧪 Scientific Image Analyst: `GPT-4 Turbo with Vision` 👀")
+st.title("Análisis de Imagen : `GPT-4 Turbo with Vision` ")
 ke = st.text_input('Ingresa tu Clave')
 #os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 os.environ['OPENAI_API_KEY'] = ke
@@ -41,7 +41,7 @@ if show_details:
     )
 
 # Button to trigger the analysis
-analyze_button = st.button("Analyse the Scientific Image", type="secondary")
+analyze_button = st.button("Analiza la imagen", type="secondary")
 
 # Check if an image has been uploaded, if the API key is available, and if the button has been pressed
 if uploaded_file is not None and api_key and analyze_button:
