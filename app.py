@@ -59,6 +59,9 @@ if uploaded_file is not None and api_key and analyze_button:
             "If applicable, include any relevant scientific terminology to enhance the explanation. "
             "Assume the reader has a basic understanding of scientific concepts."
             "Create a detailed image caption in bold explaining in short."
+            "The data is about electrical energy consumption and demand."
+            "Write when occurs the major and minor consumption, date and hour when this be possible."
+            "Explain always in spanish."
         )
     
         if show_details and additional_details:
@@ -111,4 +114,4 @@ else:
     if not uploaded_file and analyze_button:
         st.warning("Please upload an image.")
     if not api_key:
-        st.warning("Please enter your OpenAI API key.")
+        st.warning("Por favor ingresa tu API key.")
