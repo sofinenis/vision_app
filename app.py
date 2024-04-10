@@ -10,7 +10,7 @@ def encode_image(image_file):
 
 st.set_page_config(page_title="Analisis dde imagen", layout="centered", initial_sidebar_state="collapsed")
 # Streamlit page setup
-st.title("Análisis de Imagen : `GPT-4 Turbo with Vision` ")
+st.title("Análisis de Imagen:🤖🏞️")
 #st.write(openai.Model.list())
 ke = st.text_input('Ingresa tu Clave')
 #os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
@@ -32,12 +32,12 @@ if uploaded_file:
         st.image(uploaded_file, caption=uploaded_file.name, use_column_width=True)
 
 # Toggle for showing additional details input
-show_details = st.toggle("Add details about the image", value=False)
+show_details = st.toggle("Adiciona detalles sobre la imagen", value=False)
 
 if show_details:
     # Text input for additional details about the image, shown only if toggle is True
     additional_details = st.text_area(
-        "Add any additional details or context about the image here:",
+        "Adiciona contexto de la imagen aqui:",
         disabled=not show_details
     )
 
@@ -47,7 +47,7 @@ analyze_button = st.button("Analiza la imagen", type="secondary")
 # Check if an image has been uploaded, if the API key is available, and if the button has been pressed
 if uploaded_file is not None and api_key and analyze_button:
 
-    with st.spinner("Analysing the image ..."):
+    with st.spinner("Analizando ..."):
         # Encode the image
         base64_image = encode_image(uploaded_file)
     
