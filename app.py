@@ -65,7 +65,7 @@ if uploaded_file is not None and api_key and analyze_button:
         #    "Explain always in spanish."
         #)
 
-        prompt_text = ("Describe what you see in the image")
+        prompt_text = ("Describe what you see in the image in spanish")
     
         if show_details and additional_details:
             prompt_text += (
