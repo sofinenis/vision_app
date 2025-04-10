@@ -27,7 +27,7 @@ uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
 if uploaded_file:
     # Display the uploaded image
     with st.expander("Image", expanded = True):
-        st.image(uploaded_file, caption=uploaded_file.name, use_column_width=True)
+        st.image(uploaded_file, caption=uploaded_file.name, use_container_width=True)
 
 # Toggle for showing additional details input
 show_details = st.toggle("Adiciona detalles sobre la imagen", value=False)
