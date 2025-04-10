@@ -8,12 +8,10 @@ def encode_image(image_file):
     return base64.b64encode(image_file.getvalue()).decode("utf-8")
 
 
-st.set_page_config(page_title="Analisis dde imagen", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Analisis de imagen", layout="centered", initial_sidebar_state="collapsed")
 # Streamlit page setup
 st.title("Análisis de Imagen:🤖🏞️")
-#st.write(openai.Model.list())
 ke = st.text_input('Ingresa tu Clave')
-#os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 os.environ['OPENAI_API_KEY'] = ke
 
 
@@ -51,20 +49,6 @@ if uploaded_file is not None and api_key and analyze_button:
         # Encode the image
         base64_image = encode_image(uploaded_file)
     
-        # Optimized prompt for additional clarity and detail
-        #prompt_text = (
-        #    "You are a highly knowledgeable scientific image analysis expert. "
-        #   "Your task is to examine the following image in detail. "
-        #    "Provide a comprehensive, factual, and scientifically accurate explanation of what the image depicts. "
-        #    "Highlight key elements and their significance, and present your analysis in clear, well-structured markdown format. "
-        #    "If applicable, include any relevant scientific terminology to enhance the explanation. "
-        #    "Assume the reader has a basic understanding of scientific concepts."
-        #    "Create a detailed image caption in bold explaining in short."
-        #    "The data is about electrical energy consumption and demand."
-        #    "Write when occurs the major and minor consumption, date and hour when this be possible."
-        #    "Explain always in spanish."
-        #)
-
         prompt_text = ("Describe what you see in the image in spanish")
     
         if show_details and additional_details:
@@ -72,7 +56,7 @@ if uploaded_file is not None and api_key and analyze_button:
                 f"\n\nAdditional Context Provided by the User:\n{additional_details}"
             )
     
-        # Create the payload for the completion request
+        # Create the payload for the completion request - CORRECTED FORMAT
         messages = [
             {
                 "role": "user",
@@ -80,7 +64,9 @@ if uploaded_file is not None and api_key and analyze_button:
                     {"type": "text", "text": prompt_text},
                     {
                         "type": "image_url",
-                        "image_url": f"data:image/jpeg;base64,{base64_image}",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}"
+                        }
                     },
                 ],
             }
@@ -88,12 +74,6 @@ if uploaded_file is not None and api_key and analyze_button:
     
         # Make the request to the OpenAI API
         try:
-            # Without Stream
-            
-            # response = client.chat.completions.create(
-            #     model="gpt-4-vision-preview", messages=messages, max_tokens=500, stream=False
-            # )
-    
             # Stream the response
             full_response = ""
             message_placeholder = st.empty()
@@ -108,8 +88,6 @@ if uploaded_file is not None and api_key and analyze_button:
             # Final update to placeholder after the stream ends
             message_placeholder.markdown(full_response)
     
-            # Display the response in the app
-            # st.write(response.choices[0].message.content)
         except Exception as e:
             st.error(f"An error occurred: {e}")
 else:
