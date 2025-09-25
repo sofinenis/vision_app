@@ -30,7 +30,7 @@ if uploaded_file:
         st.image(uploaded_file, caption=uploaded_file.name, use_container_width=True)
 
 # Toggle for showing additional details input
-show_details = st.toggle("Adiciona detalles sobre la imagen", value=False)
+show_details = st.toggle("Pregunta algo específico sobre la imagen", value=False)
 
 if show_details:
     # Text input for additional details about the image, shown only if toggle is True
