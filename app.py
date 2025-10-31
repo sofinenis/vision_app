@@ -3,18 +3,7 @@ import streamlit as st
 import base64
 from openai import OpenAI
 
-# ==============================
-# CONFIGURACIÓN GENERAL
-# ==============================
-st.set_page_config(
-    page_title="🌻 Análisis de Imagen - Tema Girasol",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
-
-# ==============================
-# ESTILO TEMA GIRASOL
-# ==============================
+# 🌻 Estilo temático de girasol
 st.markdown("""
 <style>
 .stApp {
@@ -27,8 +16,8 @@ h1, h2, h3 {
     text-align: center;
     font-weight: bold;
 }
-p, label {
-    color: #5e4200 !important;
+p, label, .stTextInput, .stTextArea, .stExpander {
+    color: #4a3000 !important;
 }
 .stButton button {
     background-color: #f6c700 !important;
@@ -47,76 +36,51 @@ p, label {
     border: 2px solid #f6c700;
     background-color: #fff9e6;
 }
-.uploadedFile {
-    border-radius: 15px;
-}
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================
-# ENCABEZADO
-# ==============================
-st.markdown("""
-<div style="text-align:center; background-color:#fffbea; border-radius:15px; border:3px solid #f6c700; padding:20px;">
-    <h1>🌻 Análisis de Imagen con Inteligencia Artificial 🌻</h1>
-    <p>Sube una imagen y deja que la IA te cuente su historia entre pétalos de girasol 🌼</p>
-</div>
-""", unsafe_allow_html=True)
+# 🌻 Configuración de la página
+st.set_page_config(page_title="Análisis de Imagen 🌻", layout="centered", initial_sidebar_state="collapsed")
 
-st.write("")
+# 🌻 Título
+st.title("🌻 Análisis de Imagen: 🤖🏞️")
 
-# ==============================
-# FUNCIÓN PARA ENCODEAR IMAGEN
-# ==============================
+# Clave API
+ke = st.text_input('🔑 Ingresa tu Clave')
+os.environ['OPENAI_API_KEY'] = ke
+
+api_key = os.environ.get('OPENAI_API_KEY')
+
+client = OpenAI(api_key=api_key) if api_key else None
+
+# Función para convertir la imagen
 def encode_image(image_file):
     return base64.b64encode(image_file.getvalue()).decode("utf-8")
 
-# ==============================
-# CLAVE Y CONFIGURACIÓN DEL CLIENTE
-# ==============================
-ke = st.text_input("🔑 Ingresa tu Clave API de OpenAI", type="password")
-os.environ["OPENAI_API_KEY"] = ke
-
-api_key = os.environ.get("OPENAI_API_KEY")
-if not api_key:
-    st.warning("⚠️ Por favor, ingresa tu API key para continuar.")
-
-# ==============================
-# SUBIR IMAGEN
-# ==============================
-uploaded_file = st.file_uploader("🌼 Sube una imagen para analizar", type=["jpg", "png", "jpeg"])
+# Subida de imagen
+uploaded_file = st.file_uploader("🌼 Sube una imagen", type=["jpg", "png", "jpeg"])
 
 if uploaded_file:
-    with st.expander("📸 Vista previa de la imagen", expanded=True):
+    with st.expander("📸 Imagen subida", expanded=True):
         st.image(uploaded_file, caption=uploaded_file.name, use_container_width=True)
 
-# ==============================
-# PREGUNTA OPCIONAL
-# ==============================
-show_details = st.toggle("💬 ¿Deseas preguntar algo específico sobre la imagen?", value=False)
+# Opción de pregunta adicional
+show_details = st.toggle("💬 Preguntar algo específico sobre la imagen", value=False)
 
 if show_details:
     additional_details = st.text_area(
-        "🌻 Agrega tu pregunta o contexto adicional:",
-        placeholder="Ejemplo: ¿Qué emoción transmite esta imagen?",
+        "🌻 Añade contexto o tu pregunta aquí:",
         disabled=not show_details
     )
 
-# ==============================
-# BOTÓN DE ANÁLISIS
-# ==============================
-analyze_button = st.button("🌻 Analizar imagen")
+# Botón de análisis
+analyze_button = st.button("🌻 Analiza la imagen", type="secondary")
 
-# ==============================
-# LÓGICA DE ANÁLISIS
-# ==============================
+# Lógica del análisis
 if uploaded_file is not None and api_key and analyze_button:
-    client = OpenAI(api_key=api_key)
-
-    with st.spinner("🌼 Analizando la imagen, por favor espera..."):
+    with st.spinner("🌼 Analizando ... por favor espera 🌼"):
         base64_image = encode_image(uploaded_file)
-
-        prompt_text = "Describe lo que ves en esta imagen en español, usando un tono natural y descriptivo."
+        prompt_text = "Describe lo que ves en la imagen en español."
 
         if show_details and additional_details:
             prompt_text += f"\n\nContexto adicional del usuario:\n{additional_details}"
@@ -126,10 +90,7 @@ if uploaded_file is not None and api_key and analyze_button:
                 "role": "user",
                 "content": [
                     {"type": "text", "text": prompt_text},
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
-                    },
+                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}},
                 ],
             }
         ]
@@ -138,21 +99,16 @@ if uploaded_file is not None and api_key and analyze_button:
             full_response = ""
             message_placeholder = st.empty()
             for completion in client.chat.completions.create(
-                model="gpt-4o",
-                messages=messages,
-                max_tokens=1200,
-                stream=True
+                model="gpt-4o", messages=messages, max_tokens=1200, stream=True
             ):
                 if completion.choices[0].delta.content is not None:
                     full_response += completion.choices[0].delta.content
                     message_placeholder.markdown(full_response + "▌")
             message_placeholder.markdown(full_response)
-
         except Exception as e:
-            st.error(f"🚫 Ocurrió un error durante el análisis: {e}")
-
-elif analyze_button:
-    if not uploaded_file:
+            st.error(f"🚫 Ocurrió un error: {e}")
+else:
+    if not uploaded_file and analyze_button:
         st.warning("🌻 Por favor, sube una imagen antes de analizar.")
     if not api_key:
-        st.warning("🔑 Necesitas ingresar tu API key para continuar.")
+        st.warning("🔑 Ingresa tu API key para continuar.")
